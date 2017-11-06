@@ -2,7 +2,7 @@
 
 ## Demo
 
-[Demo](https://luolinyuan.github.io/vue-select/index.html)
+[Demo](https://luolinyuan.github.io/vue-selectl/index.html)
 
 
 ```
@@ -41,7 +41,7 @@ npm install vue-selectl --save
 </head>
 <body>
   <div id="app">
-      <vue-select :customdatas="datas" @checkitem="checkItem" :initcurlists="curLists" :limit="limit"></vue-select>
+      <vue-selectl :customdatas="datas" @checkitem="checkItem" :initcurlists="curLists" :limit="limit"></vue-selectl>
   </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min.js"></script>
