@@ -1,0 +1,49 @@
+{
+  "name": "vue-selectl",
+  "version": "1.0.0",
+  "description": "selector based on vue2",
+  "main": "dist/vue-selectl.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.js"
+  },
+  "author": "Luolinyuan",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.1",
+    "optimize-css-assets-webpack-plugin": "^3.2.0",
+    "postcss-loader": "^2.0.8",
+    "style-loader": "^0.19.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.1",
+    "uglifyjs-webpack-plugin": "^1.0.0-beta.3",
+    "url-loader": "^0.6.2",
+    "vue-loader": "^13.3.0",
+    "vue-style-loader": "^3.0.3",
+    "vue-template-compiler": "^2.5.2",
+    "webpack": "^3.7.1"
+  },
+  "dependencies": {
+    "pinyin-engine": "^1.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luolinyuan/vue-selectl.git"
+  },
+  "keywords": [
+    "A",
+    "multi",
+    "function",
+    "personnel",
+    "selection",
+    "plugin"
+  ],
+  "bugs": {
+    "url": "https://github.com/luolinyuan/vue-selectl/issues"
+  },
+  "homepage": "https://github.com/luolinyuan/vue-selectl#readme"
+}
