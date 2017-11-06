@@ -2,7 +2,7 @@
 
 ## Demo
 
-[Demo](https://luolinyuan.github.io/vue-selectl/index.html)
+[Demo](https://luolinyuan.github.io/vue-selectl/)
 
 
 ```
