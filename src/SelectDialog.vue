@@ -24,7 +24,7 @@
           <div class="select-dialog-right">
             <div class="select-dialog-header">
               已选({{checkDatas.length}})
-              <button @click="removeAll"><span>全部删除</span></button>
+              <button type="button" @click="removeAll"><span>全部删除</span></button>
             </div>
             <div class="search">
               <input type="text" v-model="searchRight" placeholder="名称、编号、英文名称(支持拼音搜索名字)" @focus="isFocusSearch('right', 'focus')" @blur="isFocusSearch('right', 'blur')" @input="isFocusSearch('right', 'no')">
@@ -43,7 +43,7 @@
           </div>
         </div>
         <div class="select-dialog-foot">
-          <button @click="confirmItems"><span>确定</span></button>
+          <button type="button" @click="confirmItems"><span>确定</span></button>
         </div>
       </div>
     </div>

@@ -9,13 +9,13 @@
           </ul>
         </transition>
       </div>
-      <button @click="showSelectDialog"><span>选择插件</span></button>
+      <button type="button" @click="showSelectDialog"><span>选择插件</span></button>
     </div>
     <select-dialog :model="model" :datas="datas" @hide="hide" @resetDatas="resetDatas" v-if="datas.name" :limit="limit"></select-dialog>
     <div class="cur-lists">
       <ul>
         <li v-for="item in curLists" :key="item.id">
-          <button><span>{{item.name}}</span><i @click="removeItem(item)">x</i></button>
+          <button type="button"><span>{{item.name}}</span><i @click="removeItem(item)">x</i></button>
         </li>
       </ul>
     </div>
