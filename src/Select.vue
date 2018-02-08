@@ -5,13 +5,13 @@
         <input type="text" v-model="quickSearch" placeholder="支持快速搜索选择(支持拼音搜索名字)" @focus="isFocusSearch('focus')" @blur="isFocusSearch('blur')" @input="isFocusSearch('no')">
         <transition name="fade">
           <ul v-show="quickSearch && isSearch">
-            <li v-for="item in filter(optionalLists, quickSearch)" @click="chooseItem(item)">{{item.name}}<span v-if="item.englishName">({{item.englishName}})</span></li>
+            <li v-for="item in filter(optionalLists, quickSearch)" :key="item.id" @click="chooseItem(item)">{{item.name}}<span v-if="item.englishName">({{item.englishName}})</span></li>
           </ul>
         </transition>
       </div>
-      <button type="button" @click="showSelectDialog"><span>选择插件</span></button>
+      <button type="button" @click.stop="showSelectDialog"><span>选择插件</span></button>
     </div>
-    <select-dialog :model="model" :datas="datas" @hide="hide" @resetDatas="resetDatas" v-if="datas.name" :limit="limit"></select-dialog>
+    <select-dialog :model="model" :initCurLists="initData" :datas="datas" @hide="hide" @resetDatas="resetDatas" v-if="datas.name" :limit="limit"></select-dialog>
     <div class="cur-lists">
       <ul>
         <li v-for="item in curLists" :key="item.id">
@@ -24,6 +24,7 @@
 
 <script>
   import SelectDialog from './SelectDialog'
+  import PinyinEngine from 'pinyin-engine'
   import { unique, filter } from './common/common'
   export default {
     name: 'vueSelectl',
@@ -51,28 +52,32 @@
         quickSearch: '',
         isSearch: false,
         datas: this.customdatas,
+        initDatas: this.customdatas,
         curLists: [],
-        noCheckItem: ''
+        noCheckItem: '',
+        initData: this.initcurlists
       }
     },
     created () {
-      let count = 0
-      const initCurLists = (datas, initIds) => {
-        datas.child.forEach(item => {
-          if (item.child) {
-            initCurLists(item, initIds)
-          } else {
-            if (~initIds.indexOf(item.id)) {
-              count++
-              if (this.limit && count > this.limit) {
-              } else {
-                this.chooseItem(item)
-              }
+      this.init(this.datas, this.initData)
+    },
+    watch: {
+      initcurlists (newValue, oldValue) {
+        this.initData = newValue
+        if (Object.keys(this.datas).length) {
+          this.init(this.datas, newValue)
+        } else {
+          let interval = setInterval(() => {
+            if (Object.keys(this.datas).length) {
+              clearInterval(interval)
+              this.init(this.datas, newValue)
             }
-          }
-        })
+          }, 0)
+        }
+      },
+      initData (newValue, oldValue) {
+        this.$emit('updateinit', newValue)
       }
-      initCurLists(this.datas, this.initcurlists)
     },
     computed: {
       optionalLists () {
@@ -95,18 +100,71 @@
       }
     },
     methods: {
+      init (datas, initIds) {
+        let count = 0
+        let curItems = []
+        const initCurLists = (datas, initIds) => {
+          datas.child.forEach(item => {
+            if (item.child) {
+              initCurLists(item, initIds)
+            } else {
+              if (~initIds.indexOf(item.id)) {
+                count++
+                if (this.limit && count > this.limit) {
+                } else {
+                  curItems.push(item)
+                }
+              }
+            }
+          })
+        }
+        initCurLists(datas, initIds)
+        this.curLists = []
+        this.initData.forEach(item => {
+          curItems.forEach(curItem => {
+            if (item === curItem.id) {
+              this.curLists.push(curItem)
+            }
+          })
+        })
+        this.curLists = unique(this.curLists)
+        if (this.curLists.length > this.limit) {
+          this.curLists = this.curLists.slice(-this.limit)
+        }
+        this.initChooseItem(this.curLists)
+      },
+      reset (datas) {
+        this.initData = datas
+        this.datas = JSON.parse(JSON.stringify(this.initDatas))
+        this.curLists = []
+        this.$nextTick(() => {
+          this.init(this.datas, this.initData)
+        })
+      },
       showSelectDialog () {
         this.model = !this.model
+      },
+      initChooseItem (items) {
+        this.datas = JSON.parse(JSON.stringify(this.initDatas))
+        items.forEach(item => {
+          this.checkedInitData(this.datas, true, item)
+        })
       },
       chooseItem (item) {
         this.quickSearch = ''
         this.curLists.push(item)
+        this.curLists = unique(this.curLists)
         if (this.curLists.length > this.limit) {
           this.noCheckItem = (this.curLists.slice(0, this.curLists.length - this.limit))[0].id
         }
         this.checkedData(this.datas, true, item)
         this.noCheckItem = ''
         this.curLists = unique(this.curLists).slice(-this.limit)
+        let curInit = []
+        this.curLists.forEach(item => {
+          curInit.push(item.id)
+        })
+        this.initData = [...curInit]
         this.$emit('checkitem', this.curLists)
       },
       removeItem (item) {
@@ -122,7 +180,51 @@
           this.curLists.splice(removeItemIndex, 1)
         }
         this.curLists = unique(this.curLists)
+        let curInit = []
+        this.curLists.forEach(item => {
+          curInit.push(item.id)
+        })
+        this.initData = [...curInit]
         this.$emit('checkitem', this.curLists)
+      },
+      checkedInitData (datas, checked, changeData) {
+        const checkDataMethods = (datas, checked, changeData) => {
+          if (changeData) {
+            let count = 0
+            datas.child.forEach(item => {
+              if (item.id === changeData.id) {
+                item.checked = checked
+                if (item.child && item.child.length) {
+                  checkDataMethods(item, checked)
+                }
+              } else {
+                if (item.child && item.child.length) {
+                  checkDataMethods(item, checked, changeData)
+                }
+              }
+              if (item.checked) {
+                count++
+              }
+              if (count === datas.child.length) {
+                datas.checked = true
+              } else {
+                datas.checked = false
+              }
+            })
+          } else {
+            datas.child.forEach(item => {
+              item.checked = checked
+              if (item.child && item.child.length) {
+                checkDataMethods(item, checked)
+              }
+            })
+          }
+          datas.nodeSelectNotAll = datas.child.some(item => item.checked) || datas.child.some(item => item.nodeSelectNotAll)
+        }
+        checkDataMethods(datas, checked, changeData)
+        if (changeData.id === this.initData[this.initData.length - 1]) {
+          this.$emit('checkitem', this.curLists)
+        }
       },
       checkedData (datas, checked, changeData) {
         if (changeData) {
@@ -180,6 +282,11 @@
         this.model = false
         if (datas) {
           this.curLists = JSON.parse(JSON.stringify(datas))
+          let curInit = []
+          this.curLists.forEach(item => {
+            curInit.push(item.id)
+          })
+          this.initData = [...curInit]
           this.$emit('checkitem', this.curLists)
         }
       },
@@ -200,6 +307,7 @@
       display: flex
       .search
         position: relative
+        // flex: 0 0 300px
         width: 100%
         input
           width: 100%

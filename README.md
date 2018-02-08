@@ -28,6 +28,13 @@ npm install vue-selectl --save
 | even name |       explain       | callback |
 | --------- | ------------------- | -------- |
 | checkitem | listen to selection | array    |
+| updateinit | listen to change initcurlists | array
+
+### Methods
+
+| method name |       explain       | optional |
+| --------- | ------------------- | -------- |
+| reset | do reset | array[id]    |
 
 1. use script
 
@@ -41,7 +48,9 @@ npm install vue-selectl --save
 </head>
 <body>
   <div id="app">
-      <vue-selectl :customdatas="datas" @checkitem="checkItem" :initcurlists="curLists" :limit="limit"></vue-selectl>
+    <vue-selectl :customdatas="datas" @checkitem="checkItem" @updateinit="changeCurLists" :initcurlists="curLists" :limit="limit" ref="vueSelectl"></vue-selectl>
+    <button @click="add">add</button>
+    <button @click="reset">reset</button>
   </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.min.js"></script>
@@ -51,7 +60,7 @@ npm install vue-selectl --save
       el: '#app',
       data () {
         return {
-          curLists: [4, 17, 20, 24, 23, 11],
+          curLists: [],
           limit: 5,
           datas: {
             name: '所有部门',
@@ -273,9 +282,23 @@ npm install vue-selectl --save
           }
         }
       },
+      mounted () {
+        // this.curLists.push(436)
+        this.curLists = [4, 17, 20, 24, 23, 11]
+      },
       methods: {
         checkItem: function (datas) {
           console.log('checkItem', datas)
+        },
+        add () {
+          this.curLists.push(13)
+          // this.curLists = [20, 24]
+        },
+        reset () {
+          this.$refs.vueSelectl.reset([4, 17])
+        },
+        changeCurLists (value) {
+          console.log(value)
         }
       }
     });

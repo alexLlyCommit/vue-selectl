@@ -11,7 +11,7 @@
               <input type="text" v-model="searchLeft" placeholder="名称、编号、英文名称(支持拼音搜索名字)" @focus="isFocusSearch('left', 'focus')" @blur="isFocusSearch('left', 'blur')" @input="isFocusSearch('left', 'no')">
               <transition name="fade">
                 <ul v-show="searchLeft && isLeftSearch">
-                  <li v-for="item in filter(optionalLists, searchLeft)" @click="chooseItem(item)">{{item.name}}<span v-if="item.englishName">({{item.englishName}})</span></li>
+                  <li v-for="item in filter(optionalLists, searchLeft)" :key="item.id" @click="chooseItem(item)">{{item.name}}<span v-if="item.englishName">({{item.englishName}})</span></li>
                 </ul>
               </transition>
             </div>
@@ -30,7 +30,7 @@
               <input type="text" v-model="searchRight" placeholder="名称、编号、英文名称(支持拼音搜索名字)" @focus="isFocusSearch('right', 'focus')" @blur="isFocusSearch('right', 'blur')" @input="isFocusSearch('right', 'no')">
               <transition name="fade">
                 <ul v-show="searchRight && isRightSearch">
-                  <li v-for="item in filter(checkDatas, searchRight)" @click="removeItem(item, 'search')">{{item.name}}<span v-if="item.englishName">({{item.englishName}})</span></li>
+                  <li v-for="item in filter(checkDatas, searchRight)" :key="item.id" @click="removeItem(item, 'search')">{{item.name}}<span v-if="item.englishName">({{item.englishName}})</span></li>
                 </ul>
               </transition>
             </div>
@@ -52,6 +52,7 @@
 
 <script>
   import Trees from './Trees'
+  import PinyinEngine from 'pinyin-engine'
   import { unique, filter } from './common/common'
   export default {
     name: 'select-dialog',
@@ -69,6 +70,12 @@
       limit: {
         type: Number,
         default: 0
+      },
+      initCurLists: {
+        type: Array,
+        default: function () {
+          return []
+        }
       }
     },
     data () {
@@ -96,6 +103,16 @@
         })
       }
       computeds(this.datas)
+      let curs = []
+      this.initCurLists.forEach(item => {
+        this.checkDatas.forEach(curItem => {
+          if (item === curItem.id) {
+            curs.push(curItem)
+          }
+        })
+      })
+      this.checkDatas = JSON.parse(JSON.stringify(curs))
+      this.sortDatas = JSON.parse(JSON.stringify(curs))
     },
     computed: {
       optionalLength () {
@@ -143,12 +160,12 @@
       },
       datas: {
         handler (newValue, oldValue) {
-          const computeds = datas => {
+          const computeds = (datas) => {
             datas.child.forEach(item => {
               if (item.child) {
                 computeds(item)
               } else {
-                if (item.checked) {
+                if (item.checked && item.id) {
                   this.checkDatas.push(item)
                 } else {
                   for (let i = 0; i <= this.checkDatas.length - 1; i++) {

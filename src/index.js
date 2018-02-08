@@ -1,6 +1,5 @@
 import select from './Select.vue'
 
-
 const VueSelect = {}
 VueSelect.install = function (Vue, options) {
   Vue.component(select.name, select)

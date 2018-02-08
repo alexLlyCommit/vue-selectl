@@ -33,3 +33,10 @@ export function filter (datas, value) {
   filterDatas = unique(filterDatas)
   return filterDatas
 }
+
+export function debounce (fn, timeout) {
+  clearTimeout(fn.timer)
+  fn.timer = setTimeout(() => {
+    fn()
+  }, timeout)
+}

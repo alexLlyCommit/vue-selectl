@@ -1,7 +1,7 @@
-const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const path = require('path')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
@@ -72,13 +72,13 @@ module.exports = {
     vue: 'vue'
   },
   plugins: [
-    new ExtractTextPlugin("styles.css"),
+    new ExtractTextPlugin('styles.css'),
     new UglifyJSPlugin({
       uglifyOptions: {
         compress: {
           warnings: false,
-          drop_console: true,
-          drop_debugger: true
+          drop_console: false,
+          drop_debugger: false
         }
       }
     }),
@@ -89,4 +89,4 @@ module.exports = {
       canPrint: true
     })
   ]
-};
+}

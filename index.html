@@ -7,7 +7,9 @@
 </head>
 <body>
   <div id="app">
-      <vue-selectl :customdatas="datas" @checkitem="checkItem" :initcurlists="curLists" :limit="limit"></vue-selectl>
+    <vue-selectl :customdatas="datas" @checkitem="checkItem" @updateinit="changeCurLists" :initcurlists="curLists" :limit="limit" ref="vueSelectl"></vue-selectl>
+    <button @click="add">add</button>
+    <button @click="reset">reset</button>
   </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -17,7 +19,8 @@
       el: '#app',
       data () {
         return {
-          curLists: [4, 17, 20, 24, 23, 11],
+          // curLists: [4, 17, 20, 24, 23, 11],
+          curLists: [],
           limit: 5,
           datas: {
             name: '所有部门',
@@ -239,9 +242,26 @@
           }
         }
       },
+      mounted () {
+        // this.curLists.push(436)
+        console.log(this.curLists, 'index.html')
+        this.curLists = [4, 17, 20, 24, 23, 11]
+      },
       methods: {
-        checkItem: function (datas) {
-          console.log('checkItem', datas)
+        checkItem (datas) {
+          console.log('checkItem', datas, this.curLists)
+        },
+        add () {
+          this.curLists = [20, 24]
+          // this.$nextTick(() => this.$refs.vueSelect.updateMethod(true))
+        },
+        reset () {
+          // this.curLists = [2360, 2579]
+          // this.$nextTick(() => this.$refs.vueSelect.reset([2360, 2050]))
+          this.$refs.vueSelectl.reset([4, 17])
+        },
+        changeCurLists (value) {
+          console.log(value, 9999)
         }
       }
   });
