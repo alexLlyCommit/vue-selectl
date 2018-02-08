@@ -1,6 +1,6 @@
 {
   "name": "vue-selectl",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "selector based on vue2",
   "main": "dist/vue-selectl.js",
   "scripts": {
