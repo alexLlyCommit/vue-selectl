@@ -244,24 +244,20 @@
       },
       mounted () {
         // this.curLists.push(436)
-        console.log(this.curLists, 'index.html')
         this.curLists = [4, 17, 20, 24, 23, 11]
       },
       methods: {
         checkItem (datas) {
-          console.log('checkItem', datas, this.curLists)
+          console.log('checkItem', datas)
         },
         add () {
           this.curLists = [20, 24]
-          // this.$nextTick(() => this.$refs.vueSelect.updateMethod(true))
         },
         reset () {
-          // this.curLists = [2360, 2579]
-          // this.$nextTick(() => this.$refs.vueSelect.reset([2360, 2050]))
           this.$refs.vueSelectl.reset([4, 17])
         },
         changeCurLists (value) {
-          console.log(value, 9999)
+          console.log(value)
         }
       }
   });

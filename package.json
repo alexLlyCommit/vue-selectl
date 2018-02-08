@@ -1,6 +1,6 @@
 {
   "name": "vue-selectl",
-  "version": "1.0.5",
+  "version": "1.0.4",
   "description": "selector based on vue2",
   "main": "dist/vue-selectl.js",
   "scripts": {
@@ -28,7 +28,8 @@
     "webpack": "^3.7.1"
   },
   "dependencies": {
-    "pinyin-engine": "^1.1.0"
+    "pinyin-engine": "^1.1.0",
+    "rxjs": "^5.5.6"
   },
   "repository": {
     "type": "git",
